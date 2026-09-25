@@ -44,7 +44,7 @@ COMO USAR
   "Entrar" em cada uma quando já for possível entrar.
 - As barras coloridas nas laterais imitam o LED do painel físico.
 - Engrenagem (canto inferior direito): Personalizar, atualizar, sair da
-  tela cheia, abrir config.json, fechar.
+  tela cheia, abrir config.json, ligar/desligar o modo demonstração, fechar.
 
 Teclado: Esc ou F11 = alterna tela cheia · F5 = atualiza agora · Ctrl+Q = fecha
 A agenda é relida a cada 60 s (IntervaloAtualizacaoSeg).
@@ -71,6 +71,11 @@ no campo; se não abrir, toque no ícone de teclado na barra de tarefas.
 
 CONFIGURAÇÃO (config.json — abra com o Bloco de Notas)
 -------------------------------------------------------
+Onde fica: na própria pasta do painel. Se o app foi instalado pela Microsoft
+Store (ou a pasta não permite gravação), o config.json e as imagens
+personalizadas ficam em %LOCALAPPDATA%\PainelSala — a engrenagem mostra o
+caminho em "Dados:".
+
 NomeSala                 Nome exibido em destaque (ex.: "Sala de Reuniões 1")
 Subtitulo                Linha abaixo do nome (ex.: "Minha Empresa · Matriz");
                          vazio = oculto

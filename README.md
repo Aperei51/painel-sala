@@ -26,6 +26,7 @@ status (Disponível / Começa em X min / Em reunião), próximas reuniões da ag
 4. Abra o Outlook clássico e depois o atalho **Painel de Sala**
 
 Detalhes, configuração (`config.json`) e solução de problemas: [LEIA-ME.txt](LEIA-ME.txt).
+Política de privacidade: [PRIVACIDADE.md](PRIVACIDADE.md). Publicação na Microsoft Store: [store/GUIA-STORE.md](store/GUIA-STORE.md).
 
 ## Arquivos
 
@@ -40,6 +41,9 @@ Detalhes, configuração (`config.json`) e solução de problemas: [LEIA-ME.txt]
 
 ## Versões
 
+- **1.3** — preparada para a Microsoft Store: pasta de dados gravável (`%LOCALAPPDATA%\PainelSala`) quando
+  instalada pela Store, botão *Modo demonstração* nas configurações e o kit de publicação na pasta
+  [`store/`](store/GUIA-STORE.md) (launcher, manifesto, ícones, script que gera o `.msix`, textos da listagem).
 - **1.2** — versão neutra para distribuição: subtítulo padrão vazio, logo padrão genérico e reuniões de
   demonstração genéricas. Personalize nome, subtítulo, fundo e logo pela tela *Personalizar*.
 - **1.1** — tela *Personalizar* nas configurações do app: nome da sala, subtítulo, imagem de fundo e logo,

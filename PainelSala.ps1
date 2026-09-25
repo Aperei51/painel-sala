@@ -20,9 +20,27 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$script:Versao = '1.2'
+$script:Versao = '1.3'
 $script:AppDir = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
-if (-not $Config) { $Config = Join-Path $script:AppDir 'config.json' }
+
+# Pasta de dados (config.json e imagens personalizadas). Normalmente é a própria pasta do app;
+# quando o app é instalado pela Microsoft Store (pasta somente leitura) ou a pasta não é gravável,
+# usa %LOCALAPPDATA%\PainelSala. O launcher da Store define PAINELSALA_DATA.
+function Test-PastaGravavel { param([string]$Dir)
+  try { $t = Join-Path $Dir ('.w' + [guid]::NewGuid().ToString('N').Substring(0, 8)); [IO.File]::WriteAllText($t, 'x'); Remove-Item -LiteralPath $t -Force; return $true } catch { return $false }
+}
+$script:DataDir = $script:AppDir
+if ($env:PAINELSALA_DATA) { $script:DataDir = $env:PAINELSALA_DATA }
+elseif (-not (Test-PastaGravavel $script:AppDir)) { $script:DataDir = Join-Path $env:LOCALAPPDATA 'PainelSala' }
+if ($script:DataDir -ne $script:AppDir) {
+  try { if (-not (Test-Path -LiteralPath $script:DataDir)) { New-Item -ItemType Directory -Path $script:DataDir -Force | Out-Null } } catch {}
+  # primeira execução: leva o config.json padrão para a pasta de dados
+  try {
+    $cfgApp = Join-Path $script:AppDir 'config.json'; $cfgData = Join-Path $script:DataDir 'config.json'
+    if ((Test-Path -LiteralPath $cfgApp) -and -not (Test-Path -LiteralPath $cfgData)) { Copy-Item -LiteralPath $cfgApp -Destination $cfgData -Force }
+  } catch {}
+}
+if (-not $Config) { $Config = Join-Path $script:DataDir 'config.json' }
 
 # ============================================================================
 #  WIN32 / WPF
@@ -460,6 +478,7 @@ $xaml = @'
           <Button x:Name="BtnAtualizar" Style="{StaticResource BtnGhost}" Content="Atualizar agora" Margin="0,0,0,12"/>
           <Button x:Name="BtnTela" Style="{StaticResource BtnGhost}" Content="Sair da tela cheia" Margin="0,0,0,12"/>
           <Button x:Name="BtnAbrirConfig" Style="{StaticResource BtnGhost}" Content="Abrir config.json" Margin="0,0,0,12"/>
+          <Button x:Name="BtnDemo" Style="{StaticResource BtnGhost}" Content="Modo demonstração: desligado" Margin="0,0,0,12"/>
           <Button x:Name="BtnSair" Style="{StaticResource BtnGhost}" Content="Fechar o painel" Margin="0,0,0,12"/>
           <Button x:Name="BtnVoltar" Style="{StaticResource Btn}" Content="Voltar"/>
         </StackPanel>
@@ -524,7 +543,7 @@ $window = [System.Windows.Markup.XamlReader]::Parse($xaml)
 $UI = @{}
 foreach ($n in @('Root','BgLayer','LedLeft','LedRight','TxtHora','TxtData','TxtSala','TxtSubtitulo','ImgLogo','CardStatus',
                  'TxtStatus','TxtStatusSub','TxtStatusAssunto','TxtStatusOrg','BtnReservar','BtnEntrar','Lista',
-                 'DotConexao','TxtRodape','BtnConfig','Overlay','TxtInfo','BtnPersonalizar','BtnAtualizar','BtnTela','BtnAbrirConfig','BtnSair','BtnVoltar',
+                 'DotConexao','TxtRodape','BtnConfig','Overlay','TxtInfo','BtnPersonalizar','BtnAtualizar','BtnTela','BtnAbrirConfig','BtnDemo','BtnSair','BtnVoltar',
                  'OverlayPers','TxtPersNome','TxtPersSub','TxtPersFundo','BtnPersFundo','BtnPersFundoPadrao','BtnPersFundoNenhum',
                  'TxtPersLogo','BtnPersLogo','BtnPersLogoPadrao','BtnPersLogoNenhum','TxtPersAviso','BtnPersCancelar','BtnPersSalvar')) {
   $UI[$n] = $window.FindName($n)
@@ -749,6 +768,7 @@ function Show-Overlay { param([bool]$On)
     $info = @(
       "Versão $script:Versao · " + $(if ($script:Demo) { 'modo demonstração' } elseif ($Cfg.CalendarioCompartilhado) { 'agenda: ' + $Cfg.CalendarioCompartilhado } else { 'agenda pessoal do Outlook' })
       'Atalhos: Esc/F11 tela cheia · F5 atualizar · Ctrl+Q fechar'
+      $(if ($script:DataDir -ne $script:AppDir) { "Dados: $($script:DataDir)" })
       "Config: $Config"
     ) -join "`n"
     $UI.TxtInfo.Text = $info
@@ -757,7 +777,14 @@ function Show-Overlay { param([bool]$On)
 }
 
 # --- personalização (nome, subtítulo, fundo, logo) ---------------------------
-function Resolve-AppPath { param([string]$P) if (-not $P) { return $null }; if ([System.IO.Path]::IsPathRooted($P)) { return $P }; return (Join-Path $script:AppDir $P) }
+function Resolve-AppPath { param([string]$P)
+  # Nome relativo: procura primeiro na pasta de dados (imagens personalizadas), depois na pasta do app (padrões)
+  if (-not $P) { return $null }
+  if ([System.IO.Path]::IsPathRooted($P)) { return $P }
+  $d = Join-Path $script:DataDir $P
+  if ($script:DataDir -ne $script:AppDir -and (Test-Path -LiteralPath $d)) { return $d }
+  return (Join-Path $script:AppDir $P)
+}
 
 function New-Bitmap { param([string]$Path)
   $bmp = New-Object System.Windows.Media.Imaging.BitmapImage
@@ -824,11 +851,11 @@ function Import-Asset {
   if (-not $Caminho) { return '' }
   if (-not [System.IO.Path]::IsPathRooted($Caminho)) { return $Caminho }                 # já é relativo (padrão)
   $dir = [System.IO.Path]::GetDirectoryName($Caminho).TrimEnd('\')
-  if ($dir -ieq $script:AppDir.TrimEnd('\')) { return [System.IO.Path]::GetFileName($Caminho) }   # já está na pasta do app
+  if ($dir -ieq $script:AppDir.TrimEnd('\') -or $dir -ieq $script:DataDir.TrimEnd('\')) { return [System.IO.Path]::GetFileName($Caminho) }   # já está na pasta do app/dados
   try {
     $ext = [System.IO.Path]::GetExtension($Caminho).ToLower()
     $destNome = $NomeBase + $ext
-    $dest = Join-Path $script:AppDir $destNome
+    $dest = Join-Path $script:DataDir $destNome
     Copy-Item -LiteralPath $Caminho -Destination $dest -Force -ErrorAction Stop
     return $destNome
   } catch {
@@ -900,6 +927,7 @@ function Save-Personalizacao {
 # --- aplica configuração à janela --------------------------------------------
 try { $window.FontFamily = New-Object System.Windows.Media.FontFamily([string]$Cfg.Fonte + ', Segoe UI, Arial') } catch {}
 Apply-Personalizacao
+$UI.BtnDemo.Content = if ($script:Demo) { 'Modo demonstração: ligado' } else { 'Modo demonstração: desligado' }
 try {
   $ico = Join-Path $script:AppDir 'PainelSala.ico'
   if (Test-Path -LiteralPath $ico) { $window.Icon = [System.Windows.Media.Imaging.BitmapFrame]::Create((New-Object System.Uri($ico))) }
@@ -914,6 +942,12 @@ $UI.BtnConfig.Add_Click({ Show-Overlay $true })
 $UI.BtnVoltar.Add_Click({ Show-Overlay $false })
 $UI.BtnAtualizar.Add_Click({ Show-Overlay $false; Refresh-Data })
 $UI.BtnTela.Add_Click({ Show-Overlay $false; Set-Fullscreen (-not $script:Fullscreen) })
+$UI.BtnDemo.Add_Click({
+  $script:Demo = -not $script:Demo
+  $UI.BtnDemo.Content = if ($script:Demo) { 'Modo demonstração: ligado' } else { 'Modo demonstração: desligado' }
+  Show-Overlay $false
+  Refresh-Data
+})
 $UI.BtnAbrirConfig.Add_Click({
   Show-Overlay $false
   if (-not (Test-Path -LiteralPath $Config)) {

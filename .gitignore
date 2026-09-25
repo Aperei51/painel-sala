@@ -3,3 +3,6 @@ fundo_personalizado.*
 logo_personalizado.*
 # Pacotes gerados
 *.zip
+# Saída do empacotamento para a Microsoft Store
+store/build/
+store/dist/
