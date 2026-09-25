@@ -20,7 +20,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$script:Versao = '1.0'
+$script:Versao = '1.1'
 $script:AppDir = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
 if (-not $Config) { $Config = Join-Path $script:AppDir 'config.json' }
 
@@ -309,6 +309,40 @@ $xaml = @'
       <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
       <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
+    <Style x:Key="BtnMini" TargetType="Button" BasedOn="{StaticResource BtnGhost}">
+      <Setter Property="FontSize" Value="17"/>
+      <Setter Property="MinHeight" Value="46"/>
+      <Setter Property="Padding" Value="16,0"/>
+      <Setter Property="Margin" Value="8,0,0,0"/>
+    </Style>
+    <Style x:Key="Rotulo" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="15"/>
+      <Setter Property="Opacity" Value="0.7"/>
+      <Setter Property="Margin" Value="2,0,0,0"/>
+    </Style>
+    <Style x:Key="Campo" TargetType="TextBox">
+      <Setter Property="Background" Value="#1AFFFFFF"/>
+      <Setter Property="Foreground" Value="White"/>
+      <Setter Property="CaretBrush" Value="White"/>
+      <Setter Property="SelectionBrush" Value="#22C55E"/>
+      <Setter Property="BorderBrush" Value="#55FFFFFF"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="FontSize" Value="20"/>
+      <Setter Property="Padding" Value="12,9"/>
+      <Setter Property="Margin" Value="0,6,0,16"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="TextBox">
+            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10" Padding="{TemplateBinding Padding}">
+              <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsKeyboardFocused" Value="True"><Setter Property="BorderBrush" Value="#22C55E"/></Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
   </Window.Resources>
 
   <Grid x:Name="Root">
@@ -417,6 +451,12 @@ $xaml = @'
         <StackPanel>
           <TextBlock x:Name="TxtOverlayTitulo" Text="Painel de Sala" FontSize="30" FontWeight="Bold"/>
           <TextBlock x:Name="TxtInfo" Text="" FontSize="15" Opacity="0.8" TextWrapping="Wrap" Margin="0,8,0,22"/>
+          <Button x:Name="BtnPersonalizar" Style="{StaticResource BtnGhost}" Margin="0,0,0,12">
+            <StackPanel Orientation="Horizontal">
+              <TextBlock Style="{StaticResource Icon}" Text="&#xE790;" FontSize="22" Margin="0,0,12,0"/>
+              <TextBlock Text="Personalizar (nome, fundo, logo)"/>
+            </StackPanel>
+          </Button>
           <Button x:Name="BtnAtualizar" Style="{StaticResource BtnGhost}" Content="Atualizar agora" Margin="0,0,0,12"/>
           <Button x:Name="BtnTela" Style="{StaticResource BtnGhost}" Content="Sair da tela cheia" Margin="0,0,0,12"/>
           <Button x:Name="BtnAbrirConfig" Style="{StaticResource BtnGhost}" Content="Abrir config.json" Margin="0,0,0,12"/>
@@ -426,6 +466,56 @@ $xaml = @'
       </Border>
     </Grid>
 
+    <!-- Personalização -->
+    <Grid x:Name="OverlayPers" Background="#D0000000" Visibility="Collapsed">
+      <Border Background="#0F2F28" CornerRadius="20" Padding="36" Width="660" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel>
+          <TextBlock Text="Personalizar" FontSize="30" FontWeight="Bold"/>
+          <TextBlock Text="As alterações aparecem na hora e ficam salvas no config.json." FontSize="15" Opacity="0.7" Margin="0,6,0,22"/>
+
+          <TextBlock Style="{StaticResource Rotulo}" Text="Nome da sala"/>
+          <TextBox x:Name="TxtPersNome" Style="{StaticResource Campo}"/>
+
+          <TextBlock Style="{StaticResource Rotulo}" Text="Subtítulo (opcional — deixe vazio para ocultar)"/>
+          <TextBox x:Name="TxtPersSub" Style="{StaticResource Campo}"/>
+
+          <TextBlock Style="{StaticResource Rotulo}" Text="Imagem de fundo"/>
+          <Grid Margin="0,6,0,16">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="Auto"/>
+              <ColumnDefinition Width="Auto"/>
+              <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" x:Name="TxtPersFundo" Text="" FontSize="17" Opacity="0.85" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="2,0,8,0"/>
+            <Button Grid.Column="1" x:Name="BtnPersFundo" Style="{StaticResource BtnMini}" Content="Escolher…"/>
+            <Button Grid.Column="2" x:Name="BtnPersFundoPadrao" Style="{StaticResource BtnMini}" Content="Padrão"/>
+            <Button Grid.Column="3" x:Name="BtnPersFundoNenhum" Style="{StaticResource BtnMini}" Content="Nenhuma"/>
+          </Grid>
+
+          <TextBlock Style="{StaticResource Rotulo}" Text="Logo (PNG com fundo transparente fica melhor)"/>
+          <Grid Margin="0,6,0,26">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="Auto"/>
+              <ColumnDefinition Width="Auto"/>
+              <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" x:Name="TxtPersLogo" Text="" FontSize="17" Opacity="0.85" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="2,0,8,0"/>
+            <Button Grid.Column="1" x:Name="BtnPersLogo" Style="{StaticResource BtnMini}" Content="Escolher…"/>
+            <Button Grid.Column="2" x:Name="BtnPersLogoPadrao" Style="{StaticResource BtnMini}" Content="Padrão"/>
+            <Button Grid.Column="3" x:Name="BtnPersLogoNenhum" Style="{StaticResource BtnMini}" Content="Sem logo"/>
+          </Grid>
+
+          <TextBlock x:Name="TxtPersAviso" Text="" FontSize="15" Foreground="#FCA5A5" TextWrapping="Wrap" Visibility="Collapsed" Margin="0,0,0,14"/>
+
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="BtnPersCancelar" Style="{StaticResource BtnGhost}" Content="Cancelar" Margin="0,0,14,0"/>
+            <Button x:Name="BtnPersSalvar" Style="{StaticResource Btn}" Content="Salvar"/>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+    </Grid>
   </Grid>
 </Window>
 '@
@@ -434,7 +524,9 @@ $window = [System.Windows.Markup.XamlReader]::Parse($xaml)
 $UI = @{}
 foreach ($n in @('Root','BgLayer','LedLeft','LedRight','TxtHora','TxtData','TxtSala','TxtSubtitulo','ImgLogo','CardStatus',
                  'TxtStatus','TxtStatusSub','TxtStatusAssunto','TxtStatusOrg','BtnReservar','BtnEntrar','Lista',
-                 'DotConexao','TxtRodape','BtnConfig','Overlay','TxtInfo','BtnAtualizar','BtnTela','BtnAbrirConfig','BtnSair','BtnVoltar')) {
+                 'DotConexao','TxtRodape','BtnConfig','Overlay','TxtInfo','BtnPersonalizar','BtnAtualizar','BtnTela','BtnAbrirConfig','BtnSair','BtnVoltar',
+                 'OverlayPers','TxtPersNome','TxtPersSub','TxtPersFundo','BtnPersFundo','BtnPersFundoPadrao','BtnPersFundoNenhum',
+                 'TxtPersLogo','BtnPersLogo','BtnPersLogoPadrao','BtnPersLogoNenhum','TxtPersAviso','BtnPersCancelar','BtnPersSalvar')) {
   $UI[$n] = $window.FindName($n)
 }
 
@@ -664,30 +756,150 @@ function Show-Overlay { param([bool]$On)
   $UI.Overlay.Visibility = if ($On) { 'Visible' } else { 'Collapsed' }
 }
 
+# --- personalização (nome, subtítulo, fundo, logo) ---------------------------
+function Resolve-AppPath { param([string]$P) if (-not $P) { return $null }; if ([System.IO.Path]::IsPathRooted($P)) { return $P }; return (Join-Path $script:AppDir $P) }
+
+function New-Bitmap { param([string]$Path)
+  $bmp = New-Object System.Windows.Media.Imaging.BitmapImage
+  $bmp.BeginInit()
+  $bmp.UriSource = New-Object System.Uri($Path)
+  $bmp.CacheOption = 'OnLoad'                       # não trava o arquivo — pode ser substituído depois
+  try { if ((Get-Item -LiteralPath $Path).Length -gt 1.5MB) { $bmp.DecodePixelWidth = 2560 } } catch {}   # fotos grandes: decodifica menor
+  $bmp.EndInit()
+  return $bmp
+}
+
+function Set-Background { param([string]$Caminho)
+  # Caminho relativo à pasta do app ou absoluto; vazio/inexistente = fundo liso (verde escuro)
+  try {
+    $bg = Resolve-AppPath $Caminho
+    if ($bg -and (Test-Path -LiteralPath $bg)) {
+      $brush = New-Object System.Windows.Media.ImageBrush((New-Bitmap $bg)); $brush.Stretch = 'UniformToFill'
+      $UI.BgLayer.Background = $brush
+      return $true
+    }
+  } catch {}
+  $UI.BgLayer.Background = $null
+  return $false
+}
+
+function Set-Logo { param([string]$Caminho)
+  try {
+    $lg = Resolve-AppPath $Caminho
+    if ($lg -and (Test-Path -LiteralPath $lg)) {
+      $UI.ImgLogo.Source = New-Bitmap $lg
+      $UI.ImgLogo.Visibility = 'Visible'
+      return $true
+    }
+  } catch {}
+  $UI.ImgLogo.Source = $null
+  $UI.ImgLogo.Visibility = 'Collapsed'
+  return $false
+}
+
+function Set-NomeSala { param([string]$Nome, [string]$Subtitulo)
+  $UI.TxtSala.Text = $Nome
+  $UI.TxtSubtitulo.Text = $Subtitulo
+  $UI.TxtSubtitulo.Visibility = if ($Subtitulo) { 'Visible' } else { 'Collapsed' }
+}
+
+function Apply-Personalizacao {
+  # Reaplica o que está salvo em $Cfg (usado na abertura e ao cancelar a edição)
+  Set-NomeSala -Nome ([string]$Cfg.NomeSala) -Subtitulo ([string]$Cfg.Subtitulo)
+  [void](Set-Background ([string]$Cfg.ImagemFundo))
+  [void](Set-Logo ([string]$Cfg.Logo))
+}
+
+function Save-Config {
+  # Grava TODAS as chaves (na ordem dos padrões), preservando o que já estava no config.json
+  $o = [ordered]@{}
+  foreach ($k in $Defaults.Keys) { $o[$k] = $Cfg[$k] }
+  ($o | ConvertTo-Json -Depth 3) | Set-Content -LiteralPath $Config -Encoding UTF8
+}
+
+function Import-Asset {
+  # Copia a imagem escolhida para a pasta do app (assim o painel não depende de arquivos em Downloads/pendrive)
+  # e devolve o valor a gravar no config: nome relativo (preferido) ou caminho absoluto se não der para copiar.
+  param([string]$Caminho, [string]$NomeBase)
+  if (-not $Caminho) { return '' }
+  if (-not [System.IO.Path]::IsPathRooted($Caminho)) { return $Caminho }                 # já é relativo (padrão)
+  $dir = [System.IO.Path]::GetDirectoryName($Caminho).TrimEnd('\')
+  if ($dir -ieq $script:AppDir.TrimEnd('\')) { return [System.IO.Path]::GetFileName($Caminho) }   # já está na pasta do app
+  try {
+    $ext = [System.IO.Path]::GetExtension($Caminho).ToLower()
+    $destNome = $NomeBase + $ext
+    $dest = Join-Path $script:AppDir $destNome
+    Copy-Item -LiteralPath $Caminho -Destination $dest -Force -ErrorAction Stop
+    return $destNome
+  } catch {
+    return $Caminho
+  }
+}
+
+function Select-ImageFile { param([string]$Titulo)
+  $dlg = New-Object Microsoft.Win32.OpenFileDialog
+  $dlg.Title = $Titulo
+  $dlg.Filter = 'Imagens (*.jpg;*.jpeg;*.png;*.bmp)|*.jpg;*.jpeg;*.png;*.bmp|Todos os arquivos (*.*)|*.*'
+  try { $dlg.InitialDirectory = [Environment]::GetFolderPath('MyPictures') } catch {}
+  $ok = $dlg.ShowDialog($window)
+  if ($ok) { return $dlg.FileName }
+  return $null
+}
+
+function Get-NomeExibicao { param([string]$Valor, [string]$Padrao, [string]$Nenhum)
+  if (-not $Valor) { return $Nenhum }
+  if ($Valor -eq $Padrao) { return 'Padrão (' + $Padrao + ')' }
+  return ($Valor.Split([char[]]@('\', '/')))[-1]
+}
+
+function Update-PersLabels {
+  $UI.TxtPersFundo.Text = Get-NomeExibicao -Valor $script:Pers.Fundo -Padrao ([string]$Defaults.ImagemFundo) -Nenhum 'Nenhuma (fundo liso)'
+  $UI.TxtPersLogo.Text  = Get-NomeExibicao -Valor $script:Pers.Logo  -Padrao ([string]$Defaults.Logo)        -Nenhum 'Sem logo'
+}
+
+function Show-OverlayPers { param([bool]$On)
+  if ($On) {
+    Show-Overlay $false
+    $script:Pers = @{ Fundo = [string]$Cfg.ImagemFundo; Logo = [string]$Cfg.Logo }
+    $UI.TxtPersNome.Text = [string]$Cfg.NomeSala
+    $UI.TxtPersSub.Text  = [string]$Cfg.Subtitulo
+    $UI.TxtPersAviso.Visibility = 'Collapsed'
+    Update-PersLabels
+    $UI.OverlayPers.Visibility = 'Visible'
+    $UI.TxtPersNome.Focus() | Out-Null
+    $UI.TxtPersNome.SelectAll()
+  } else {
+    $UI.OverlayPers.Visibility = 'Collapsed'
+  }
+}
+
+function Cancel-Personalizacao {
+  Show-OverlayPers $false
+  Apply-Personalizacao          # desfaz a pré-visualização
+}
+
+function Save-Personalizacao {
+  $nome = $UI.TxtPersNome.Text.Trim()
+  if (-not $nome) { $nome = [string]$Defaults.NomeSala }
+  $Cfg.NomeSala    = $nome
+  $Cfg.Subtitulo   = $UI.TxtPersSub.Text.Trim()
+  $Cfg.ImagemFundo = Import-Asset -Caminho $script:Pers.Fundo -NomeBase 'fundo_personalizado'
+  $Cfg.Logo        = Import-Asset -Caminho $script:Pers.Logo  -NomeBase 'logo_personalizado'
+  try {
+    Save-Config
+  } catch {
+    $UI.TxtPersAviso.Text = 'Não foi possível gravar o config.json: ' + $_.Exception.Message
+    $UI.TxtPersAviso.Visibility = 'Visible'
+    return
+  }
+  Apply-Personalizacao
+  Show-OverlayPers $false
+  Set-Footer 'Personalização salva' 'ok'
+}
+
 # --- aplica configuração à janela --------------------------------------------
 try { $window.FontFamily = New-Object System.Windows.Media.FontFamily([string]$Cfg.Fonte + ', Segoe UI, Arial') } catch {}
-$UI.TxtSala.Text = [string]$Cfg.NomeSala
-$UI.TxtSubtitulo.Text = [string]$Cfg.Subtitulo
-$UI.TxtSubtitulo.Visibility = if ($Cfg.Subtitulo) { 'Visible' } else { 'Collapsed' }
-
-function Resolve-AppPath { param([string]$P) if (-not $P) { return $null }; if ([System.IO.Path]::IsPathRooted($P)) { return $P }; return (Join-Path $script:AppDir $P) }
-try {
-  $bg = Resolve-AppPath ([string]$Cfg.ImagemFundo)
-  if ($bg -and (Test-Path -LiteralPath $bg)) {
-    $bmp = New-Object System.Windows.Media.Imaging.BitmapImage
-    $bmp.BeginInit(); $bmp.UriSource = New-Object System.Uri($bg); $bmp.CacheOption = 'OnLoad'; $bmp.EndInit()
-    $brush = New-Object System.Windows.Media.ImageBrush($bmp); $brush.Stretch = 'UniformToFill'
-    $UI.BgLayer.Background = $brush
-  }
-} catch {}
-try {
-  $lg = Resolve-AppPath ([string]$Cfg.Logo)
-  if ($lg -and (Test-Path -LiteralPath $lg)) {
-    $bmp = New-Object System.Windows.Media.Imaging.BitmapImage
-    $bmp.BeginInit(); $bmp.UriSource = New-Object System.Uri($lg); $bmp.CacheOption = 'OnLoad'; $bmp.EndInit()
-    $UI.ImgLogo.Source = $bmp
-  } else { $UI.ImgLogo.Visibility = 'Collapsed' }
-} catch { $UI.ImgLogo.Visibility = 'Collapsed' }
+Apply-Personalizacao
 try {
   $ico = Join-Path $script:AppDir 'PainelSala.ico'
   if (Test-Path -LiteralPath $ico) { $window.Icon = [System.Windows.Media.Imaging.BitmapFrame]::Create((New-Object System.Uri($ico))) }
@@ -712,11 +924,42 @@ $UI.BtnAbrirConfig.Add_Click({
 $UI.BtnSair.Add_Click({ $window.Close() })
 $UI.Overlay.Add_MouseDown({ param($s, $e) if ($e.OriginalSource -eq $s) { Show-Overlay $false } })
 
+# personalização
+$UI.BtnPersonalizar.Add_Click({ Show-OverlayPers $true })
+$UI.BtnPersCancelar.Add_Click({ Cancel-Personalizacao })
+$UI.BtnPersSalvar.Add_Click({ Save-Personalizacao })
+$UI.OverlayPers.Add_MouseDown({ param($s, $e) if ($e.OriginalSource -eq $s) { Cancel-Personalizacao } })
+$UI.TxtPersNome.Add_TextChanged({ Set-NomeSala -Nome $UI.TxtPersNome.Text -Subtitulo $UI.TxtPersSub.Text })   # pré-visualização ao digitar
+$UI.TxtPersSub.Add_TextChanged({ Set-NomeSala -Nome $UI.TxtPersNome.Text -Subtitulo $UI.TxtPersSub.Text })
+$UI.BtnPersFundo.Add_Click({
+  $f = Select-ImageFile -Titulo 'Escolher imagem de fundo'
+  if ($f) {
+    if (Set-Background $f) { $script:Pers.Fundo = $f; $UI.TxtPersAviso.Visibility = 'Collapsed' }
+    else { $UI.TxtPersAviso.Text = 'Não foi possível abrir essa imagem.'; $UI.TxtPersAviso.Visibility = 'Visible'; [void](Set-Background $script:Pers.Fundo) }
+    Update-PersLabels
+  }
+})
+$UI.BtnPersFundoPadrao.Add_Click({ $script:Pers.Fundo = [string]$Defaults.ImagemFundo; [void](Set-Background $script:Pers.Fundo); Update-PersLabels })
+$UI.BtnPersFundoNenhum.Add_Click({ $script:Pers.Fundo = ''; [void](Set-Background ''); Update-PersLabels })
+$UI.BtnPersLogo.Add_Click({
+  $f = Select-ImageFile -Titulo 'Escolher logo'
+  if ($f) {
+    if (Set-Logo $f) { $script:Pers.Logo = $f; $UI.TxtPersAviso.Visibility = 'Collapsed' }
+    else { $UI.TxtPersAviso.Text = 'Não foi possível abrir essa imagem.'; $UI.TxtPersAviso.Visibility = 'Visible'; [void](Set-Logo $script:Pers.Logo) }
+    Update-PersLabels
+  }
+})
+$UI.BtnPersLogoPadrao.Add_Click({ $script:Pers.Logo = [string]$Defaults.Logo; [void](Set-Logo $script:Pers.Logo); Update-PersLabels })
+$UI.BtnPersLogoNenhum.Add_Click({ $script:Pers.Logo = ''; [void](Set-Logo ''); Update-PersLabels })
 
 $window.Add_KeyDown({
   param($s, $e)
   switch ($e.Key) {
-    'Escape' { if ($UI.Overlay.Visibility -eq 'Visible') { Show-Overlay $false } else { Set-Fullscreen (-not $script:Fullscreen) } }
+    'Escape' {
+      if ($UI.OverlayPers.Visibility -eq 'Visible') { Cancel-Personalizacao }
+      elseif ($UI.Overlay.Visibility -eq 'Visible') { Show-Overlay $false }
+      else { Set-Fullscreen (-not $script:Fullscreen) }
+    }
     'F11'    { Set-Fullscreen (-not $script:Fullscreen) }
     'F5'     { Refresh-Data }
     'Q'      { if ($e.KeyboardDevice.Modifiers -eq [System.Windows.Input.ModifierKeys]::Control) { $window.Close() } }

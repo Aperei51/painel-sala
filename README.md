@@ -10,6 +10,7 @@ status (Disponível / Começa em X min / Em reunião), próximas reuniões da ag
 - Abre a reunião direto no app do Teams (protocolo `msteams://`), sem passar pelo navegador
 - Barras laterais mudam de cor como o LED do painel físico (verde / laranja / vermelho)
 - Não precisa instalar nada além do que já vem no Windows (PowerShell + WPF, arquivo único)
+- Tela **Personalizar** dentro do app (engrenagem): nome da sala, subtítulo, imagem de fundo e logo
 
 ## Requisitos
 
@@ -39,4 +40,6 @@ Detalhes, configuração (`config.json`) e solução de problemas: [LEIA-ME.txt]
 
 ## Versões
 
+- **1.1** — tela *Personalizar* nas configurações do app: nome da sala, subtítulo, imagem de fundo e logo,
+  com prévia ao vivo e gravação automática no `config.json`. Nada mais foi alterado.
 - **1.0** — versão inicial: relógio, status, próximas reuniões, Entrar no Teams, modo quiosque, instalador.

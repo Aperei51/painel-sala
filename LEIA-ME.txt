@@ -43,11 +43,30 @@ COMO USAR
 - A lista abaixo mostra as próximas reuniões (hoje / amanhã), com botão
   "Entrar" em cada uma quando já for possível entrar.
 - As barras coloridas nas laterais imitam o LED do painel físico.
-- Engrenagem (canto inferior direito): atualizar, sair da tela cheia,
-  abrir config.json, fechar.
+- Engrenagem (canto inferior direito): Personalizar, atualizar, sair da
+  tela cheia, abrir config.json, fechar.
 
 Teclado: Esc ou F11 = alterna tela cheia · F5 = atualiza agora · Ctrl+Q = fecha
 A agenda é relida a cada 60 s (IntervaloAtualizacaoSeg).
+
+
+PERSONALIZAR (nome, fundo, logo) — direto no painel
+----------------------------------------------------
+Toque na engrenagem > Personalizar. Na tela que abre:
+- Nome da sala e Subtítulo: digite e veja a mudança na hora (subtítulo
+  vazio = some).
+- Imagem de fundo: "Escolher…" abre o seletor de arquivos (JPG/PNG);
+  "Padrão" volta ao fundo verde original; "Nenhuma" deixa o fundo liso.
+  Fotos em paisagem (16:9, ex. 1920x1080) ficam melhores.
+- Logo: "Escolher…" (PNG com fundo transparente fica melhor — use a versão
+  branca/negativa do logo, pois o fundo é escuro); "Padrão" volta ao logo
+  ABRAJEEP; "Sem logo" esconde.
+- Salvar grava tudo no config.json; Cancelar (ou Esc) desfaz a prévia.
+A imagem escolhida é copiada para a pasta do painel (fundo_personalizado.jpg
+/ logo_personalizado.png), então o arquivo original pode ser apagado ou
+estar num pendrive sem problema.
+Em telas de toque sem teclado: o Windows abre o teclado virtual ao tocar
+no campo; se não abrir, toque no ícone de teclado na barra de tarefas.
 
 
 CONFIGURAÇÃO (config.json — abra com o Bloco de Notas)
@@ -75,8 +94,11 @@ AbrirVia                 "msteams" = abre direto no aplicativo do Teams
 PermitirReserva          true = mostra o botão "Reservar", que cria um compromisso
                          de DuracaoReservaMin minutos na agenda, começando agora
 Fonte                    Fonte da interface (padrão "Segoe UI")
-ImagemFundo              Imagem de fundo (troque fundo.jpg por qualquer foto)
-Logo                     Logo no canto inferior esquerdo (PNG com fundo transparente)
+ImagemFundo              Imagem de fundo (nome de arquivo na pasta do painel ou
+                         caminho completo; vazio = fundo liso). Mais fácil pela
+                         tela Personalizar.
+Logo                     Logo no canto inferior esquerdo (PNG com fundo transparente;
+                         vazio = sem logo). Mais fácil pela tela Personalizar.
 Demo                     true = sempre abre com dados fictícios
 
 
