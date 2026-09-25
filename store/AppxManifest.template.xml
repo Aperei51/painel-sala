@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap uap5 desktop rescap">
+
+  <!-- Os três valores abaixo vêm do Partner Center (Gerenciamento do produto > Identidade do produto)
+       e são preenchidos automaticamente pelo Empacotar-MSIX.ps1 a partir do store.json -->
+  <Identity Name="{{IdentityName}}" Publisher="{{Publisher}}" Version="{{Version}}" ProcessorArchitecture="neutral" />
+
+  <Properties>
+    <DisplayName>{{DisplayName}}</DisplayName>
+    <PublisherDisplayName>{{PublisherDisplayName}}</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+    <Description>Painel de sala de reuniões em tela cheia: agenda do Outlook e Entrar no Teams com um toque.</Description>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.22631.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="pt-BR" />
+    <Resource Language="en-US" />
+  </Resources>
+
+  <Applications>
+    <Application Id="PainelSala" Executable="PainelSala.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements
+        DisplayName="{{DisplayName}}"
+        Description="Painel de sala de reuniões em tela cheia: agenda do Outlook e Entrar no Teams com um toque."
+        BackgroundColor="#04201B"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square310x310Logo="Assets\LargeTile.png" Square71x71Logo="Assets\SmallTile.png" />
+        <uap:SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="#04201B" />
+      </uap:VisualElements>
+      <Extensions>
+        <!-- Permite "Iniciar com o Windows" (o usuário liga em Configurações > Aplicativos > Inicialização) -->
+        <desktop:Extension Category="windows.startupTask" Executable="PainelSala.exe" EntryPoint="Windows.FullTrustApplication">
+          <desktop:StartupTask TaskId="PainelSalaStartup" Enabled="false" DisplayName="{{DisplayName}}" />
+        </desktop:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+</Package>
