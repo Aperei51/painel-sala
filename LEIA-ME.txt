@@ -1,0 +1,123 @@
+﻿PAINEL DE SALA DE REUNIÕES — ABRAJEEP
+======================================
+Painel em tela cheia para o notebook, no estilo do Logitech Tap Scheduler:
+relógio, nome da sala, status (Disponível / Começa em X min / Em reunião),
+próximas reuniões da agenda e botão "Entrar no Teams" que abre a reunião
+direto no aplicativo do Teams com um toque.
+
+Não precisa instalar nada além do que já vem no Windows (PowerShell + WPF).
+Não pede senha nem cadastro no Azure: lê a agenda do Outlook que já está logado.
+
+
+REQUISITOS
+----------
+- Windows 10 ou 11
+- Outlook CLÁSSICO instalado e com a conta aberta (o "novo Outlook" não
+  permite leitura da agenda por programas — se o botão "Novo Outlook" estiver
+  ligado no canto superior direito do Outlook, desligue-o)
+- Microsoft Teams instalado e logado (para o botão "Entrar" abrir direto no app)
+
+
+INSTALAR (1 minuto)
+-------------------
+1. Copie esta pasta para um lugar fixo, por exemplo:  C:\PainelSala
+2. Dê dois cliques em  Instalar.cmd
+   -> cria o atalho "Painel de Sala" na área de trabalho
+   -> cria o atalho "Painel de Sala (Demo)" (dados fictícios, para testar sem Outlook)
+   -> faz o painel abrir sozinho ao entrar no Windows
+   Para instalar SEM inicialização automática:  Instalar.cmd -SemInicio
+3. Abra o atalho "Painel de Sala".
+
+Para remover os atalhos: Desinstalar.cmd (a pasta é mantida).
+Para abrir sem instalar: PainelSala.cmd  (ou Demo.cmd para o modo demonstração).
+
+
+COMO USAR
+---------
+- O cartão grande mostra o estado atual:
+    verde   = Disponível (e até que horas)
+    laranja = a próxima reunião começa em poucos minutos
+    vermelho= Em reunião
+- "Entrar no Teams" aparece quando a reunião tem link do Teams e faltam
+  no máximo 15 minutos para começar (ajustável em MinutosAntesParaEntrar).
+- A lista abaixo mostra as próximas reuniões (hoje / amanhã), com botão
+  "Entrar" em cada uma quando já for possível entrar.
+- As barras coloridas nas laterais imitam o LED do painel físico.
+- Engrenagem (canto inferior direito): atualizar, sair da tela cheia,
+  abrir config.json, fechar.
+
+Teclado: Esc ou F11 = alterna tela cheia · F5 = atualiza agora · Ctrl+Q = fecha
+A agenda é relida a cada 60 s (IntervaloAtualizacaoSeg).
+
+
+CONFIGURAÇÃO (config.json — abra com o Bloco de Notas)
+-------------------------------------------------------
+NomeSala                 Nome exibido em destaque (ex.: "Sala de Reuniões 1")
+Subtitulo                Linha abaixo do nome (ex.: "ABRAJEEP · Sede São Paulo")
+CalendarioCompartilhado  Vazio = sua agenda. Para exibir a agenda de uma SALA ou
+                         caixa compartilhada do Microsoft 365, coloque o e-mail dela
+                         (ex.: "sala.reunioes@abrajeep.org.br"). Você precisa ter
+                         permissão de leitura nessa agenda.
+HorasAFrente             Até quantas horas à frente listar (padrão 30 = hoje e amanhã)
+MaxItens                 Máximo de linhas na lista (padrão 6)
+IntervaloAtualizacaoSeg  Frequência de leitura do Outlook em segundos (padrão 60)
+MinutosAntesParaEntrar   Libera o botão "Entrar" X minutos antes (padrão 15)
+IntervaloLivreMin        Mostra "Livre" entre reuniões quando o intervalo for
+                         maior ou igual a X minutos (0 = não mostrar)
+MostrarOrganizador       true/false — mostra quem organizou a reunião
+TelaCheia                true = quiosque em tela cheia; false = janela comum
+SempreNoTopo             Mantenha false: assim a janela do Teams aparece por cima
+                         ao entrar na reunião
+Monitor                  0 = tela principal; 1 = segundo monitor/TV; etc.
+ManterTelaLigada         true = impede que a tela apague enquanto o painel estiver aberto
+AbrirVia                 "msteams" = abre direto no aplicativo do Teams
+                         "https"   = abre pelo navegador (use se o app não abrir)
+PermitirReserva          true = mostra o botão "Reservar", que cria um compromisso
+                         de DuracaoReservaMin minutos na agenda, começando agora
+Fonte                    Fonte da interface (padrão "Segoe UI")
+ImagemFundo              Imagem de fundo (troque fundo.jpg por qualquer foto)
+Logo                     Logo no canto inferior esquerdo (PNG com fundo transparente)
+Demo                     true = sempre abre com dados fictícios
+
+
+PROBLEMAS COMUNS
+----------------
+"Sem conexão com o Outlook" no rodapé
+   - Abra o Outlook clássico e confirme que a conta está logada.
+   - Se estiver usando o "novo Outlook", volte para o clássico (chave no canto
+     superior direito do Outlook) — o novo não expõe a agenda a programas.
+   - Se aparecer um aviso do Outlook "Um programa está tentando acessar
+     informações de endereços de e-mail", coloque MostrarOrganizador = false
+     em config.json (ou clique em Permitir).
+
+O botão "Entrar" abre o navegador em vez do app do Teams
+   - Confirme que o Teams (trabalho ou escola) está instalado e logado.
+   - Em Configurações do Windows > Aplicativos > Aplicativos padrão, procure
+     "msteams" e confirme que está associado ao Microsoft Teams.
+   - Alternativa: coloque AbrirVia = "https" em config.json.
+
+O painel abriu na tela errada
+   - Ajuste Monitor em config.json (0 = principal, 1 = segundo monitor).
+
+A reunião não mostra o botão "Entrar"
+   - O compromisso precisa ter um link do Teams (no corpo, no local ou criado
+     pelo botão "Reunião do Teams" do Outlook). Reuniões sem link aparecem
+     na lista, só sem o botão.
+
+Nada acontece ao abrir
+   - Clique com o botão direito em PainelSala.ps1 > Propriedades > marque
+     "Desbloquear" (o Instalar.cmd já faz isso para toda a pasta).
+   - Rode PainelSala.cmd para ver se aparece alguma mensagem de erro.
+
+
+ARQUIVOS
+--------
+PainelSala.ps1   o programa (PowerShell + WPF, arquivo único)
+config.json      configurações
+Instalar.cmd     cria atalhos e inicialização automática (chama Instalar.ps1)
+Desinstalar.cmd  remove os atalhos
+PainelSala.cmd   abre o painel sem instalar
+Demo.cmd         abre com dados fictícios
+fundo.jpg        imagem de fundo (pode trocar)
+logo.png         logo ABRAJEEP (versão branca)
+PainelSala.ico   ícone dos atalhos

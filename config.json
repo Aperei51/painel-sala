@@ -1,0 +1,22 @@
+{
+  "NomeSala": "Sala de Reuniões",
+  "Subtitulo": "ABRAJEEP",
+  "CalendarioCompartilhado": "",
+  "HorasAFrente": 30,
+  "MaxItens": 6,
+  "IntervaloAtualizacaoSeg": 60,
+  "MinutosAntesParaEntrar": 15,
+  "IntervaloLivreMin": 30,
+  "MostrarOrganizador": true,
+  "TelaCheia": true,
+  "SempreNoTopo": false,
+  "Monitor": 0,
+  "ManterTelaLigada": true,
+  "AbrirVia": "msteams",
+  "PermitirReserva": false,
+  "DuracaoReservaMin": 30,
+  "Fonte": "Segoe UI",
+  "ImagemFundo": "fundo.jpg",
+  "Logo": "logo.png",
+  "Demo": false
+}

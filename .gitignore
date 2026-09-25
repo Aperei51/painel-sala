@@ -1,0 +1,5 @@
+# Imagens escolhidas pela tela "Personalizar" (específicas de cada instalação)
+fundo_personalizado.*
+logo_personalizado.*
+# Pacotes gerados
+*.zip
