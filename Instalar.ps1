@@ -59,7 +59,7 @@ if (-not (Test-Path -LiteralPath $cfg)) {
   @'
 {
   "NomeSala": "Sala de Reuniões",
-  "Subtitulo": "ABRAJEEP",
+  "Subtitulo": "",
   "CalendarioCompartilhado": "",
   "HorasAFrente": 30,
   "MaxItens": 6,

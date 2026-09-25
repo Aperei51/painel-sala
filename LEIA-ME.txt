@@ -1,5 +1,5 @@
-﻿PAINEL DE SALA DE REUNIÕES — ABRAJEEP
-======================================
+﻿PAINEL DE SALA DE REUNIÕES
+==========================
 Painel em tela cheia para o notebook, no estilo do Logitech Tap Scheduler:
 relógio, nome da sala, status (Disponível / Começa em X min / Em reunião),
 próximas reuniões da agenda e botão "Entrar no Teams" que abre a reunião
@@ -59,8 +59,8 @@ Toque na engrenagem > Personalizar. Na tela que abre:
   "Padrão" volta ao fundo verde original; "Nenhuma" deixa o fundo liso.
   Fotos em paisagem (16:9, ex. 1920x1080) ficam melhores.
 - Logo: "Escolher…" (PNG com fundo transparente fica melhor — use a versão
-  branca/negativa do logo, pois o fundo é escuro); "Padrão" volta ao logo
-  ABRAJEEP; "Sem logo" esconde.
+  branca/negativa do logo da sua empresa, pois o fundo é escuro); "Padrão"
+  volta ao logo genérico; "Sem logo" esconde.
 - Salvar grava tudo no config.json; Cancelar (ou Esc) desfaz a prévia.
 A imagem escolhida é copiada para a pasta do painel (fundo_personalizado.jpg
 / logo_personalizado.png), então o arquivo original pode ser apagado ou
@@ -72,10 +72,11 @@ no campo; se não abrir, toque no ícone de teclado na barra de tarefas.
 CONFIGURAÇÃO (config.json — abra com o Bloco de Notas)
 -------------------------------------------------------
 NomeSala                 Nome exibido em destaque (ex.: "Sala de Reuniões 1")
-Subtitulo                Linha abaixo do nome (ex.: "ABRAJEEP · Sede São Paulo")
+Subtitulo                Linha abaixo do nome (ex.: "Minha Empresa · Matriz");
+                         vazio = oculto
 CalendarioCompartilhado  Vazio = sua agenda. Para exibir a agenda de uma SALA ou
                          caixa compartilhada do Microsoft 365, coloque o e-mail dela
-                         (ex.: "sala.reunioes@abrajeep.org.br"). Você precisa ter
+                         (ex.: "sala.reunioes@suaempresa.com.br"). Você precisa ter
                          permissão de leitura nessa agenda.
 HorasAFrente             Até quantas horas à frente listar (padrão 30 = hoje e amanhã)
 MaxItens                 Máximo de linhas na lista (padrão 6)
@@ -141,5 +142,5 @@ Desinstalar.cmd  remove os atalhos
 PainelSala.cmd   abre o painel sem instalar
 Demo.cmd         abre com dados fictícios
 fundo.jpg        imagem de fundo (pode trocar)
-logo.png         logo ABRAJEEP (versão branca)
+logo.png         logo padrão genérico (branco, fundo transparente) — troque pelo seu
 PainelSala.ico   ícone dos atalhos

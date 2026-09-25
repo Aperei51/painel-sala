@@ -20,7 +20,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$script:Versao = '1.1'
+$script:Versao = '1.2'
 $script:AppDir = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
 if (-not $Config) { $Config = Join-Path $script:AppDir 'config.json' }
 
@@ -46,7 +46,7 @@ try {
 # ============================================================================
 $Defaults = [ordered]@{
   NomeSala                = 'Sala de Reuniões'
-  Subtitulo               = 'ABRAJEEP'
+  Subtitulo               = ''         # linha abaixo do nome da sala (ex.: nome da empresa); vazio = oculto
   CalendarioCompartilhado = ''         # e-mail de uma sala ou caixa compartilhada; vazio = agenda pessoal
   HorasAFrente            = 30         # até quantas horas à frente listar reuniões
   MaxItens                = 6          # máximo de linhas na lista
@@ -151,11 +151,11 @@ function Get-DemoMeetings {
   $link = 'https://teams.microsoft.com/l/meetup-join/19%3ameeting_demo%40thread.v2/0?context=%7b%22Tid%22%3a%22demo%22%7d'
   $amanha = (Get-Date -Hour 9 -Minute 0 -Second 0).AddDays(1)
   @(
-    [pscustomobject]@{ Assunto = 'Comissão Comercial — Stellantis x Rede';   Inicio = $base.AddMinutes(10);  Fim = $base.AddMinutes(70);  Organizador = 'ABRAJEEP';          Local = 'Microsoft Teams'; Link = $link; Ocupado = $true }
-    [pscustomobject]@{ Assunto = 'Alinhamento Programa ABRAJEEP IA';         Inicio = $base.AddMinutes(100); Fim = $base.AddMinutes(130); Organizador = 'Diretoria Executiva'; Local = 'Microsoft Teams'; Link = $link; Ocupado = $true }
-    [pscustomobject]@{ Assunto = 'Fechamento Nota & Anota — Setembro';       Inicio = $base.AddMinutes(200); Fim = $base.AddMinutes(245); Organizador = 'Comunicação';        Local = 'Sala 2';          Link = $null; Ocupado = $true }
-    [pscustomobject]@{ Assunto = 'Reunião de Diretoria Vendas JEEP/RAM';     Inicio = $amanha;               Fim = $amanha.AddHours(1.5);  Organizador = 'Stellantis';         Local = 'Microsoft Teams'; Link = $link; Ocupado = $true }
-    [pscustomobject]@{ Assunto = 'Comissão de Pós-Vendas';                   Inicio = $amanha.AddHours(5);   Fim = $amanha.AddHours(6);    Organizador = 'ABRAJEEP';          Local = 'Microsoft Teams'; Link = $link; Ocupado = $true }
+    [pscustomobject]@{ Assunto = 'Reunião de Diretoria';                     Inicio = $base.AddMinutes(10);  Fim = $base.AddMinutes(70);  Organizador = 'Diretoria';          Local = 'Microsoft Teams'; Link = $link; Ocupado = $true }
+    [pscustomobject]@{ Assunto = 'Alinhamento de Projeto';                   Inicio = $base.AddMinutes(100); Fim = $base.AddMinutes(130); Organizador = 'Equipe de Projetos'; Local = 'Microsoft Teams'; Link = $link; Ocupado = $true }
+    [pscustomobject]@{ Assunto = 'Revisão Mensal de Resultados';             Inicio = $base.AddMinutes(200); Fim = $base.AddMinutes(245); Organizador = 'Financeiro';         Local = 'Sala 2';          Link = $null; Ocupado = $true }
+    [pscustomobject]@{ Assunto = 'Planejamento Comercial';                   Inicio = $amanha;               Fim = $amanha.AddHours(1.5);  Organizador = 'Comercial';          Local = 'Microsoft Teams'; Link = $link; Ocupado = $true }
+    [pscustomobject]@{ Assunto = 'Comitê de Operações';                      Inicio = $amanha.AddHours(5);   Fim = $amanha.AddHours(6);    Organizador = 'Operações';          Local = 'Microsoft Teams'; Link = $link; Ocupado = $true }
   )
 }
 

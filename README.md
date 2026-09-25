@@ -36,10 +36,12 @@ Detalhes, configuração (`config.json`) e solução de problemas: [LEIA-ME.txt]
 | `Instalar.cmd` / `Instalar.ps1` | cria atalhos e inicialização automática |
 | `Desinstalar.cmd` | remove os atalhos |
 | `PainelSala.cmd` / `Demo.cmd` | abre o painel sem instalar / modo demonstração |
-| `fundo.jpg`, `logo.png`, `PainelSala.ico` | imagem de fundo, logo e ícone |
+| `fundo.jpg`, `logo.png`, `PainelSala.ico` | imagem de fundo, logo padrão (troque pelo seu) e ícone |
 
 ## Versões
 
+- **1.2** — versão neutra para distribuição: subtítulo padrão vazio, logo padrão genérico e reuniões de
+  demonstração genéricas. Personalize nome, subtítulo, fundo e logo pela tela *Personalizar*.
 - **1.1** — tela *Personalizar* nas configurações do app: nome da sala, subtítulo, imagem de fundo e logo,
   com prévia ao vivo e gravação automática no `config.json`. Nada mais foi alterado.
 - **1.0** — versão inicial: relógio, status, próximas reuniões, Entrar no Teams, modo quiosque, instalador.
